@@ -58,6 +58,9 @@ def panos_connect_and_validate_ready(ip, **kwargs):
         except ssh_exception.NetMikoAuthenticationException:
             logging.error('PAN-OS not ready: Authentication failed.')
             return False
+        except ValueError:
+            logging.error('PAN-OS not ready: Value Error.')
+            return False
 
     connected = False
     retry_count = 0
