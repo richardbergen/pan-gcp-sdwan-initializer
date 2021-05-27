@@ -61,6 +61,9 @@ def panos_connect_and_validate_ready(ip, **kwargs):
         except ValueError:
             logging.error('PAN-OS not ready: Value Error, SSH keys have not been generated yet.')
             return False
+        except OSError:
+            logging.error('PAN-OS not ready: Socket closed.')
+            return False
 
     connected = False
     retry_count = 0
