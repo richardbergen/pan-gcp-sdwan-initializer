@@ -89,7 +89,7 @@ def panos_connect_and_validate_ready(ip, **kwargs):
                 return connected
 
         retry_count += 1
-        print(f'Retrying... SSH etry count {retry_count} / {SSH_MAX_RETRIES}')
+        print(f'Retrying... SSH retry count {retry_count} / {SSH_MAX_RETRIES}')
         time.sleep(SSH_RETRY_SLEEP_TIME_SEC)
     
     return False
