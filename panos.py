@@ -64,6 +64,9 @@ def panos_connect_and_validate_ready(ip, **kwargs):
         except OSError:
             logging.error('PAN-OS not ready: Socket closed.')
             return False
+        except:
+            logging.error('Unknown error.')
+            return False
 
     connected = False
     retry_count = 0
