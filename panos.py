@@ -34,8 +34,8 @@ def panos_connect_and_validate_ready(ip, **kwargs):
                     print('AutoCom has not yet completed.')
                     return False
         else:
-            print('No AutoCom found in jobs, expecting that it has already completed.')
-            return True
+            print('No AutoCom found in jobs, retrying.')
+            return False
 
     def ssh_to_ngfw(**kwargs):
         """
@@ -64,7 +64,7 @@ def panos_connect_and_validate_ready(ip, **kwargs):
         except OSError:
             logging.error('PAN-OS not ready: Socket closed.')
             return False
-        except:
+        except as (e):
             logging.error('Unknown error.')
             return False
 
@@ -167,7 +167,7 @@ def panos_create_apikey(username, password, host, **kwargs):
 
     if api_response != None:
         if api_response['response']['@status'] == 'success':
-            print('API key is: ', api_response['response']['result']['key'])
+            #print('API key is: ', api_response['response']['result']['key'])
             return api_response['response']['result']['key']
         else:
             print('API Key generation was NOT successful. Error: ' + api_response['response']['result']['msg'])
