@@ -188,7 +188,7 @@ def panos_create_vm_auth_key(host, panos_api_key, **kwargs):
 
 def create_bootstrap_terraform_files(number_of_students):
     print('Creating bootstrap files.')
-    required_files = [f'{TERRAFORM_PATH}\gcp_bucket.template', f'{BOOTSTRAP_PATH}\init-cfg.template']
+    required_files = [f'{TERRAFORM_PATH}/gcp_bucket.template', f'{BOOTSTRAP_PATH}/init-cfg.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
     if required_files == files_that_exist:
         student_terraform_files = []   
