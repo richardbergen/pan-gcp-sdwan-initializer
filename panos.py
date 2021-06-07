@@ -194,10 +194,10 @@ def create_bootstrap_terraform_files(number_of_students):
         student_terraform_files = []   
         student_bootstrap_files = []
 
-        with open('gcp_bucket.template', 'r', encoding = 'utf-8') as fout:
+        with open(f'{TERRAFORM_PATH}/gcp_bucket.template', 'r', encoding = 'utf-8') as fout:
             gcp_bucket_template_content = fout.read()
         
-        with open('init-cfg.template', 'r', encoding = 'utf-8') as fout:
+        with open(f'{BOOTSTRAP_PATH}/init-cfg.template', 'r', encoding = 'utf-8') as fout:
             bootstrap_template_content = fout.read()
 
         for student_number in range(number_of_students):  
