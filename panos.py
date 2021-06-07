@@ -204,18 +204,14 @@ def create_bootstrap_terraform_files(number_of_students):
             print(student_number)  
             student_terraform_files.append(gcp_bucket_template_content)
             student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'student-{student_number}')
-            print(student_bootstrap_files[student_number], '\n')
             tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}.tf'
-            print(f'TF file path = {tf_filename}')
             with open(tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_files[student_number])
                 fout.write('\n')
 
             student_bootstrap_files.append(bootstrap_template_content)
             student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('firewallname', f'student-{student_number}')
-            print(student_bootstrap_files[student_number], '\n')
             bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}'
-            print(f'bootstrap_filename = {bootstrap_filename}')
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_bootstrap_files[student_number])
                 fout.write('\n')
