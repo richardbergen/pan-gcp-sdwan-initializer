@@ -9,10 +9,10 @@ SSH_RETRY_SLEEP_TIME_SEC = 10
 AUTOCOMMIT_MAX_RETRIES = 45
 AUTOCOMMIT_RETRY_SLEEP_TIME_SEC = 5
 
-#TERRAFORM_PATH = '/home/rbergen/pan-sdwan/terraform'
-#BOOTSTRAP_PATH = '/home/rbergen/pan-sdwan/terraform'
-TERRAFORM_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
-BOOTSTRAP_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
+TERRAFORM_PATH = '/home/rbergen/pan-sdwan/terraform'
+BOOTSTRAP_PATH = '/home/rbergen/pan-sdwan/terraform'
+#TERRAFORM_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
+#BOOTSTRAP_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
 
 
 def panos_connect_and_validate_ready(ip, **kwargs):
@@ -187,6 +187,7 @@ def panos_create_vm_auth_key(host, panos_api_key, **kwargs):
     return vm_auth_key
 
 def create_bootstrap_terraform_files(number_of_students):
+    print('Creating bootstrap files.')
     required_files = ['gcp_bucket.template', 'init-cfg.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
     if required_files == files_that_exist:
