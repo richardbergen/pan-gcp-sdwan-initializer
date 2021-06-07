@@ -1,5 +1,5 @@
 
-import logging, argparse
+import logging, argparse, sys
 from panos import check_if_panos_is_ready, panos_configure_admin_acct, panos_send_commands, panos_create_apikey, panos_create_vm_auth_key, create_bootstrap_terraform_files
 from libs import make_http_request, convert_xml_to_dict
 
@@ -11,9 +11,8 @@ parser.add_argument("--login-username", help="Username to log in with")
 parser.add_argument("--login-password", help="Password to use")
 parser.add_argument("--priv-ssh-key", help="Path to ssh private key file")
 parser.add_argument("--change-password-to", help="Path to ssh private key file")
-parser.add_argument("--create-bootstrap", help="Creates bootstrap folder structure and necessary files for X number of students")
+parser.add_argument("--create-bootstrap", help="Creates bootstrap folder structure and necessary files for students")
 parser.add_argument("--create-api-key", help="Creates API key for PAN-OS device", action="store_true")
-parser.add_argument("--create-vm-auth-key", help="Creates vm-auth-key in Panorama to be used for bootstrapping", action="store_true")
 
 args = parser.parse_args()
 
@@ -22,7 +21,6 @@ def main():
 
     if args.ip:
         ip = args.ip
-        print('ip = ', ip)
 
     if args.priv_ssh_key:
         use_keys = True
@@ -35,7 +33,6 @@ def main():
         username = args.login_username
     else:
         username = 'admin'
-    print('username = ', username)
 
     if args.login_password:
         password = args.login_password
@@ -58,12 +55,14 @@ def main():
     if args.create_api_key:
         panos_api_key = panos_create_apikey(username, password, ip)
 
-    if args.create_api_key and args.create_vm_auth_key:
-        vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
-        print(vm_auth_key)
-
+    #if args.create_api_key and args.create_bootstrap:
     if args.create_bootstrap:
-        number_of_students = int(args.create_bootstrap)
+        try:
+            number_of_students = int(args.create_bootstrap)
+        except:
+            sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
+        #vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
+        #print(vm_auth_key)
         create_bootstrap_terraform_files(number_of_students)
 
     if panos_connection:

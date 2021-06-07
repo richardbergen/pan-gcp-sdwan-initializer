@@ -9,6 +9,12 @@ SSH_RETRY_SLEEP_TIME_SEC = 10
 AUTOCOMMIT_MAX_RETRIES = 45
 AUTOCOMMIT_RETRY_SLEEP_TIME_SEC = 5
 
+#TERRAFORM_PATH = '/home/rbergen/pan-sdwan/terraform'
+#BOOTSTRAP_PATH = '/home/rbergen/pan-sdwan/terraform'
+TERRAFORM_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
+BOOTSTRAP_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
+
+
 def panos_connect_and_validate_ready(ip, **kwargs):
     def panos_command_successful(panos_connection):
         """
@@ -184,11 +190,29 @@ def create_bootstrap_terraform_files(number_of_students):
     required_files = ['gcp_bucket.template', 'init-cfg.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
     if required_files == files_that_exist:
-        student_terraform_files = []
+        student_terraform_files = []   
+        student_bootstrap_files = []
+
         with open('gcp_bucket.template', 'r', encoding = 'utf-8') as fout:
-            content = fout.read()
+            gcp_bucket_template_content = fout.read()
+        
+        with open('init-cfg.template', 'r', encoding = 'utf-8') as fout:
+            bootstrap_template_content = fout.read()
+
         for student_number in range(number_of_students):  
             print(student_number)  
-            student_terraform_files.append(content)
+            student_terraform_files.append(gcp_bucket_template_content)
             student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'student-{student_number}')
-    print(student_terraform_files)
+            tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}.tf'
+            with open(tf_filename, 'w', encoding='utf-8') as fout:
+                fout.write(student_terraform_files[student_number])
+                fout.write('\n')
+
+            student_bootstrap_files.append(bootstrap_template_content)
+            student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('firewallname', f'student-{student_number}')
+            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}'
+            with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
+                fout.write(student_bootstrap_files[student_number])
+                fout.write('\n')
+
+    #print(student_terraform_files)
