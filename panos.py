@@ -1,6 +1,6 @@
 from netmiko import ConnectHandler, ssh_exception
 from libs import make_http_request, convert_xml_to_dict
-import time, re, sys, os, logging, copy
+import time, re, sys, os, logging, copy, random
 
 
 SSH_MAX_RETRIES = 45
@@ -9,8 +9,10 @@ SSH_RETRY_SLEEP_TIME_SEC = 10
 AUTOCOMMIT_MAX_RETRIES = 45
 AUTOCOMMIT_RETRY_SLEEP_TIME_SEC = 5
 
-TERRAFORM_PATH = '/home/rbergen/pan-sdwan/terraform/NGFW'
-BOOTSTRAP_PATH = '/home/rbergen/pan-sdwan/terraform'
+BASE_PATH = '/home/rbergen/pan-sdwan'
+TERRAFORM_PATH = BASE_PATH + '/terraform/NGFW'
+BOOTSTRAP_PATH = BASE_PATH + '/terraform'
+
 #TERRAFORM_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
 #BOOTSTRAP_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
 
@@ -187,6 +189,11 @@ def panos_create_vm_auth_key(host, panos_api_key, **kwargs):
     return vm_auth_key
 
 def create_bootstrap_terraform_files(number_of_students):
+    def random_alnum(size=6):
+        chars = string.ascii_letters + string.digits
+        code = ''.join(random.choice(chars) for _ in range(size))
+        return code
+
     print('Creating bootstrap files.')
     required_files = [f'{TERRAFORM_PATH}/gcp_bucket.template', f'{BOOTSTRAP_PATH}/init-cfg.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
@@ -201,9 +208,10 @@ def create_bootstrap_terraform_files(number_of_students):
             bootstrap_template_content = fout.read()
 
         for student_number in range(number_of_students):  
-            print(student_number)  
+            #print(student_number) 
+            random_project_id = random_alnum()
             student_terraform_files.append(gcp_bucket_template_content)
-            student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'student-{student_number}')
+            student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'a6f5d3_student-{student_number}')
             tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}.tf'
             with open(tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_files[student_number])
@@ -215,6 +223,9 @@ def create_bootstrap_terraform_files(number_of_students):
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_bootstrap_files[student_number])
                 fout.write('\n')
+    
+    
+        
     else:
         sys.exit('ERROR: Required template files for bootstrapping are missing.')
 
