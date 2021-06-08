@@ -9,7 +9,7 @@ SSH_RETRY_SLEEP_TIME_SEC = 10
 AUTOCOMMIT_MAX_RETRIES = 45
 AUTOCOMMIT_RETRY_SLEEP_TIME_SEC = 5
 
-TERRAFORM_PATH = '/home/rbergen/pan-sdwan/terraform'
+TERRAFORM_PATH = '/home/rbergen/pan-sdwan/terraform/NGFW'
 BOOTSTRAP_PATH = '/home/rbergen/pan-sdwan/terraform'
 #TERRAFORM_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
 #BOOTSTRAP_PATH = '/Users/rbergen/Documents/Python/sdwan-utd'
