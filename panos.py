@@ -188,7 +188,7 @@ def panos_create_vm_auth_key(host, panos_api_key, **kwargs):
     vm_auth_key = re.search(r"\d{4,}", http_result_xml.decode('utf-8')).group()
     return vm_auth_key
 
-def create_bootstrap_terraform_files(number_of_students):
+def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
     def random_alnum(size=6):
         chars = string.ascii_letters + string.digits
         code = ''.join(random.choice(chars) for _ in range(size))
@@ -211,7 +211,7 @@ def create_bootstrap_terraform_files(number_of_students):
             #print(student_number) 
             random_project_id = random_alnum()
             student_terraform_files.append(gcp_bucket_template_content)
-            student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'a6f5d3_student-{student_number}')
+            student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'a6f5d3-student-{student_number}')
             tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}.tf'
             with open(tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_files[student_number])
@@ -219,12 +219,12 @@ def create_bootstrap_terraform_files(number_of_students):
 
             student_bootstrap_files.append(bootstrap_template_content)
             student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('firewallname', f'student-{student_number}')
+            student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
+            student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('PROJECTID', 'a6f5d3')
             bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}'
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_bootstrap_files[student_number])
                 fout.write('\n')
-    
-    
         
     else:
         sys.exit('ERROR: Required template files for bootstrapping are missing.')

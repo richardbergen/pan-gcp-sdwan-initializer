@@ -61,9 +61,8 @@ def main():
             number_of_students = int(args.create_bootstrap)
         except:
             sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
-        #vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
-        #print(vm_auth_key)
-        create_bootstrap_terraform_files(number_of_students)
+        vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
+        create_bootstrap_terraform_files(number_of_students, vm_auth_key)
 
     if panos_connection:
         panos_connection.disconnect()
