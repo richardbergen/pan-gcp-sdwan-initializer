@@ -1,6 +1,6 @@
 from netmiko import ConnectHandler, ssh_exception
 from libs import make_http_request, convert_xml_to_dict
-import time, re, sys, os, logging, copy, random
+import time, re, sys, os, logging, copy, random, string
 
 
 SSH_MAX_RETRIES = 45
@@ -72,8 +72,8 @@ def panos_connect_and_validate_ready(ip, **kwargs):
         except OSError:
             logging.error('PAN-OS not ready: Socket closed.')
             return False
-        except:
-            logging.error('Unknown error.')
+        except Exception as e:
+            logging.error('Unknown error: ' + e)
             return False
 
     connected = False
