@@ -212,9 +212,9 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
             #print(student_number) 
             random_project_id = random_alnum()
             student_terraform_files.append(gcp_bucket_template_content)
-            student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'a6f5d3-student-{student_number}')
-            student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'student-{student_number}')
-            tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}.tf'
+            student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'{random_project_id}-student-{student_number}')
+            student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'{random_project_id}-student-{student_number}')
+            tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_{student_number}.tf'
             with open(tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_files[student_number])
                 fout.write('\n')
@@ -223,7 +223,7 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
             student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('firewallname', f'student-{student_number}')
             student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
             student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('PROJECTID', 'a6f5d3')
-            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}'
+            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.{random_project_id}-student-{student_number}'
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_bootstrap_files[student_number])
                 fout.write('\n')
