@@ -208,9 +208,9 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
         with open(f'{BOOTSTRAP_PATH}/init-cfg.template', 'r', encoding = 'utf-8') as fout:
             bootstrap_template_content = fout.read()
 
+        random_project_id = random_alnum()
         for student_number in range(number_of_students):  
             #print(student_number) 
-            random_project_id = random_alnum()
             student_terraform_files.append(gcp_bucket_template_content)
             student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'{random_project_id}-student-{student_number}')
             student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'{random_project_id}-student-{student_number}')
