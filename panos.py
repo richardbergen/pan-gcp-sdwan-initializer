@@ -213,7 +213,7 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
             random_project_id = random_alnum()
             student_terraform_files.append(gcp_bucket_template_content)
             student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'a6f5d3-student-{student_number}')
-            student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', student_number)
+            student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'student-{student_number}')
             tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}.tf'
             with open(tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_files[student_number])
