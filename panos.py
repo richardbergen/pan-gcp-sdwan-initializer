@@ -219,8 +219,9 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
                 #tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_{student_number}.tf'
 
                 print(f'Student string = student-{student_number}-ngfw-{ngfw_number}')
-                
-                student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'student-{student_number}-ngfw-{ngfw_number}')
+                student_string = 'Student string = student-{student_number}-ngfw-{ngfw_number}'
+
+                student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', student_string)
 
                 tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}_ngfw_{ngfw_number}.tf'
                 with open(tf_filename, 'w', encoding='utf-8') as fout:
