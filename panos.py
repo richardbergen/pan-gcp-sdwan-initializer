@@ -211,7 +211,7 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
         with open(f'{TERRAFORM_PATH}/pan_fw.template', 'r', encoding = 'utf-8') as fout:
             pan_fw_template_content = fout.read()
         
-        random_project_id = random_alnum()
+        random_project_id = random_alnum().lower
         #for student_number in range(number_of_students):  
 
         pan_fw_tf_filename = f'{TERRAFORM_PATH}/pan_fw.tf'
