@@ -199,8 +199,8 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
     required_files = [f'{TERRAFORM_PATH}/gcp_bucket.template', f'{BOOTSTRAP_PATH}/init-cfg.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
     if required_files == files_that_exist:
-        student_terraform_files = []   
-        student_bootstrap_files = []
+        #student_terraform_files = []   
+        #student_bootstrap_files = []
 
         with open(f'{TERRAFORM_PATH}/gcp_bucket.template', 'r', encoding = 'utf-8') as fout:
             gcp_bucket_template_content = fout.read()
@@ -209,36 +209,45 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
             bootstrap_template_content = fout.read()
 
         random_project_id = random_alnum()
-        for student_number in range(number_of_students):  
+        #for student_number in range(number_of_students):  
 
-            for ngfw_number in range(NUMBER_OF_NGFWS):
-                #print(student_number) 
-                student_terraform_files.append(gcp_bucket_template_content)
-                #student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', f'{random_project_id}-student-{student_number}')
-                #student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'{random_project_id}-student-{student_number}')
-                #tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_{student_number}.tf'
+        for ngfw_number in range(NUMBER_OF_NGFWS):
+            project_id_and_ngfw_num_string = f'{random_project_id}-ngfw-{ngfw_number}'
+            print(project_id_and_ngfw_num_string)
+            #print(student_number) 
+            #student_terraform_files.append(gcp_bucket_template_content)
+            
+            student_terraform_file = str(gcp_bucket_template_content)
+            
+            #student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', project_id_and_ngfw_num_string)
+            student_terraform_files = student_terraform_file.replace('firewallname', project_id_and_ngfw_num_string)
+            
+            #student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'{random_project_id}-student-{student_number}')
 
-                print(f'Student string = student-{student_number}-ngfw-{ngfw_number}')
-                student_string = 'Student string = student-{student_number}-ngfw-{ngfw_number}'
+            tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_{ngfw_number}.tf'
+            
+            #student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', student_string)
+            #tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}_ngfw_{ngfw_number}.tf'
+            
+            with open(tf_filename, 'w', encoding='utf-8') as fout:
+                #fout.write(student_terraform_files[student_number])
+                fout.write(student_terraform_files)
+                fout.write('\n')
 
-                student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', student_string)
+            #student_bootstrap_files.append(bootstrap_template_content)
+            student_bootstrap_file = str(bootstrap_template_content)
+            
+            #student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('firewallname', project_id_and_ngfw_num_string)
+            #student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
+            student_bootstrap_file = student_bootstrap_file.replace('firewallname', project_id_and_ngfw_num_string)
+            student_bootstrap_file = student_bootstrap_file.replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
 
-                tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}_ngfw_{ngfw_number}.tf'
-                with open(tf_filename, 'w', encoding='utf-8') as fout:
-                    fout.write(student_terraform_files[student_number])
-                    fout.write('\n')
-
-                student_bootstrap_files.append(bootstrap_template_content)
-                student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('firewallname', f'student-{student_number}-ngfw-{ngfw_number}')
-                student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
-
-                #student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('PROJECTID', 'a6f5d3')
-                #bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.{random_project_id}-student-{student_number}'
-
-                bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}-ngfw-{ngfw_number}'
-                with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
-                    fout.write(student_bootstrap_files[student_number])
-                    fout.write('\n')
+            #student_bootstrap_files[student_number] = student_bootstrap_files[student_number].replace('PROJECTID', 'a6f5d3')
+            #bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.{random_project_id}-student-{student_number}'
+            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{random_project_id}-ngfw-{ngfw_number}'
+            with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
+                fout.write(student_bootstrap_file)
+                fout.write('\n')
         
     else:
         sys.exit('ERROR: Required template files for bootstrapping are missing.')
