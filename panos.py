@@ -224,7 +224,7 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
             
             #student_terraform_files[student_number] = student_terraform_files[student_number].replace('STUDENTNUMBER', f'{random_project_id}-student-{student_number}')
 
-            tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_{ngfw_number}.tf'
+            tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_ngfw_{ngfw_number}.tf'
             
             #student_terraform_files[student_number] = student_terraform_files[student_number].replace('firewallname', student_string)
             #tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}_ngfw_{ngfw_number}.tf'
