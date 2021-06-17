@@ -22,7 +22,23 @@ def convert_xml_to_dict(xml_data):
     except:
         print('XML parsing response error occurred. (xml_to_dict)')
 
-def create_bootstrap_folder_structure():
-    paths = ['bootstrap/config', 'bootstrap/license', 'bootstrap/content', 'bootstrap/software']
-    for path in paths: 
-        os.makedirs(path, exist_ok=True)
+def write_to_file(filename, data):
+    #try:
+    #    with open(filename, 'w', encoding = 'utf-8') as fout:
+    #        fout.write(data)
+    #    return True
+    #except:
+    #    return False
+    with open(filename, 'w', encoding = 'utf-8') as fout:
+        fout.write(data)
+
+def read_from_file(filename):
+    #with open(filename, 'r', encoding = 'utf-8') as file_in:
+    #    file_contents = file_in.read()
+    #    return file_contents
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding = 'utf-8') as file_in:
+            file_contents = file_in.read()
+        return file_contents
+    else:
+        return False

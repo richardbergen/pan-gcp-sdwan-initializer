@@ -189,7 +189,7 @@ def panos_create_vm_auth_key(host, panos_api_key, **kwargs):
     vm_auth_key = re.search(r"\d{4,}", http_result_xml.decode('utf-8')).group()
     return vm_auth_key
 
-def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
+def create_bootstrap_terraform_files(student_number, vm_auth_key):
     def random_alnum(size=6):
         chars = string.ascii_letters + string.digits
         code = ''.join(random.choice(chars) for _ in range(size))
@@ -216,24 +216,25 @@ def create_bootstrap_terraform_files(number_of_students, vm_auth_key):
 
         pan_fw_tf_filename = f'{TERRAFORM_PATH}/pan_fw.tf'
         pan_fw_template_file = str(pan_fw_template_content)
-        pan_fw_template_file = pan_fw_template_file.replace('PROJECTID', random_project_id)
+        pan_fw_template_file = pan_fw_template_file.replace('STUDENTID', f'student-{student_number}')
         with open(pan_fw_tf_filename, 'w', encoding='utf-8') as fout:
             fout.write(pan_fw_template_file)
             fout.write('\n')
 
         for ngfw_number in range(NUMBER_OF_NGFWS):
-            project_id_and_ngfw_num_string = f'{random_project_id}-ngfw-{ngfw_number}'            
+            project_id_and_ngfw_num_string = f'student-{student_number}-ngfw-{ngfw_number}'            
             student_terraform_file = str(gcp_bucket_template_content)
             student_terraform_file = student_terraform_file.replace('firewallname', project_id_and_ngfw_num_string)
-            gcp_bucket_tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{random_project_id}_ngfw_{ngfw_number}.tf'
+            gcp_bucket_tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}_ngfw_{ngfw_number}.tf'
             with open(gcp_bucket_tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_file)
                 fout.write('\n')
 
             student_bootstrap_file = str(bootstrap_template_content)            
             student_bootstrap_file = student_bootstrap_file.replace('firewallname', project_id_and_ngfw_num_string)
+            student_bootstrap_file = student_bootstrap_file.replace('STUDENTID', f'{student_number}')
             student_bootstrap_file = student_bootstrap_file.replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
-            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{random_project_id}-ngfw-{ngfw_number}'
+            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}-ngfw-{ngfw_number}'
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_bootstrap_file)
                 fout.write('\n')

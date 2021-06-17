@@ -1,7 +1,9 @@
 
-import logging, argparse, sys
+import logging, argparse, sys, json, os
 from panos import check_if_panos_is_ready, panos_configure_admin_acct, panos_send_commands, panos_create_apikey, panos_create_vm_auth_key, create_bootstrap_terraform_files
-from libs import make_http_request, convert_xml_to_dict
+from libs import make_http_request, convert_xml_to_dict, write_to_file, read_from_file
+
+TMP_FILE = 'tracker.tmp'
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.WARN)
 
@@ -17,6 +19,7 @@ parser.add_argument("--create-api-key", help="Creates API key for PAN-OS device"
 args = parser.parse_args()
 
 def main():
+
     panos_connection = None
 
     if args.ip:
@@ -57,12 +60,40 @@ def main():
 
     #if args.create_api_key and args.create_bootstrap:
     if args.create_bootstrap:
-        try:
+        if read_from_file(TMP_FILE):
+            number_of_students_remaining = int(read_from_file(TMP_FILE))
+            student_number = number_of_students_remaining
+            print(f'Current student number: {student_number}')
+            print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
+        else:
             number_of_students = int(args.create_bootstrap)
-        except:
-            sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
-        vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
-        create_bootstrap_terraform_files(number_of_students, vm_auth_key)
+            print(f'No config found: number of students entered: {number_of_students}')
+            print(write_to_file(TMP_FILE, f'{number_of_students - 1}'))
+            student_number = number_of_students
+            print(f'Current student number: {student_number}')
+        number_of_students_remaining = student_number - 1
+        print(f'number_of_students_remaining: {number_of_students_remaining}')
+        #try:
+        #    if read_from_file(TMP_FILE):
+        #        number_of_students_remaining = int(read_from_file(TMP_FILE))
+        #        student_number = number_of_students_remaining
+        #        print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
+#
+        #    else:
+        #        number_of_students = int(args.create_bootstrap)
+        #        print(f'No config found: number of students entered: {number_of_students}')
+        #        print(write_to_file(TMP_FILE, f'{number_of_students}'))
+        #        student_number = number_of_students
+        #    number_of_students_remaining = number_of_students - 1
+        #    print(f'number_of_students_remaining: {number_of_students_remaining}')
+        #except:
+        #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
+        #vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
+        if number_of_students_remaining < 1:
+            print('number_of_students_remaining <= 1, removing file')
+            os.remove(TMP_FILE)
+        vm_auth_key = '1111'
+        create_bootstrap_terraform_files(student_number, vm_auth_key)
 
     if panos_connection:
         panos_connection.disconnect()
