@@ -73,21 +73,21 @@ def main():
             print(f'Current student number: {student_number}')
         number_of_students_remaining = student_number - 1
         print(f'number_of_students_remaining: {number_of_students_remaining}')
-        try:
-            if read_from_file(TMP_FILE):
-                number_of_students_remaining = int(read_from_file(TMP_FILE))
-                student_number = number_of_students_remaining
-                print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
-
-            else:
-                number_of_students = int(args.create_bootstrap)
-                print(f'No config found: number of students entered: {number_of_students}')
-                print(write_to_file(TMP_FILE, f'{number_of_students}'))
-                student_number = number_of_students
-            number_of_students_remaining = number_of_students - 1
-            print(f'number_of_students_remaining: {number_of_students_remaining}')
-        except:
-            sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
+        #try:
+        #    if read_from_file(TMP_FILE):
+        #        number_of_students_remaining = int(read_from_file(TMP_FILE))
+        #        student_number = number_of_students_remaining
+        #        print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
+#
+        #    else:
+        #        number_of_students = int(args.create_bootstrap)
+        #        print(f'No config found: number of students entered: {number_of_students}')
+        #        print(write_to_file(TMP_FILE, f'{number_of_students}'))
+        #        student_number = number_of_students
+        #    number_of_students_remaining = number_of_students - 1
+        #    print(f'number_of_students_remaining: {number_of_students_remaining}')
+        #except:
+        #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
         vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
         if number_of_students_remaining < 1:
             print('number_of_students_remaining <= 1, removing file')
