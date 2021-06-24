@@ -14,6 +14,7 @@ parser.add_argument("--login-password", help="Password to use")
 parser.add_argument("--priv-ssh-key", help="Path to ssh private key file")
 parser.add_argument("--change-password-to", help="Path to ssh private key file")
 parser.add_argument("--create-bootstrap", help="Creates bootstrap folder structure and necessary files for students")
+parser.add_argument("--panorama-serial-number", help="Serial number for Panorama registration")
 parser.add_argument("--create-api-key", help="Creates API key for PAN-OS device", action="store_true")
 
 args = parser.parse_args()
@@ -55,8 +56,11 @@ def main():
     if 'ip' in locals():
         panos_send_commands(panos_connection, command_type='operational', commands=['show clock'])
 
-    if args.create_api_key:
-        panos_api_key = panos_create_apikey(username, password, ip)
+    if 'ip' in locals():
+        panos_send_commands(panos_connection, command_type='operational', commands=['show clock'])
+
+    if args.panorama_serial_number:
+        panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}'])
 
     #if args.create_api_key and args.create_bootstrap:
     if args.create_bootstrap:
@@ -90,7 +94,7 @@ def main():
         #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
         vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
         if number_of_students_remaining < 1:
-            print('number_of_students_remaining <= 1, removing file')
+            print('number_of_students_remaining < 1, removing file')
             os.remove(TMP_FILE)
         #vm_auth_key = '1111'
         create_bootstrap_terraform_files(student_number, vm_auth_key)
