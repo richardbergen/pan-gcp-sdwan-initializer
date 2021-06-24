@@ -56,9 +56,6 @@ def main():
     if 'ip' in locals():
         panos_send_commands(panos_connection, command_type='operational', commands=['show clock'])
 
-    if args.panorama_serial_number:
-        panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}'])
-
     if args.create_api_key:
         panos_api_key = panos_create_apikey(username, password, ip)
 
@@ -98,6 +95,9 @@ def main():
             os.remove(TMP_FILE)
         #vm_auth_key = '1111'
         create_bootstrap_terraform_files(student_number, vm_auth_key)
+
+    if args.panorama_serial_number:
+        panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}'])
 
     if panos_connection:
         panos_connection.disconnect()
