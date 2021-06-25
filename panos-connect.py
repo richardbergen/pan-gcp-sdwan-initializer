@@ -97,7 +97,7 @@ def main():
         create_bootstrap_terraform_files(student_number, vm_auth_key)
 
     if args.panorama_serial_number:
-        panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}'])
+        panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
 
     if panos_connection:
         panos_connection.disconnect()
