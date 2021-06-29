@@ -216,7 +216,7 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
 
         pan_fw_tf_filename = f'{TERRAFORM_PATH}/pan_fw.tf'
         pan_fw_template_file = str(pan_fw_template_content)
-        pan_fw_template_file = pan_fw_template_file.replace('STUDENTID', f'student-{student_number}')
+        #pan_fw_template_file = pan_fw_template_file.replace('STUDENTID', f'student-{student_number}')
         with open(pan_fw_tf_filename, 'w', encoding='utf-8') as fout:
             fout.write(pan_fw_template_file)
             fout.write('\n')
@@ -230,9 +230,9 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
                 fout.write(student_terraform_file)
                 fout.write('\n')
 
-            student_bootstrap_file = str(bootstrap_template_content)            
+            student_bootstrap_file = str(bootstrap_template_content)
             student_bootstrap_file = student_bootstrap_file.replace('firewallname', project_id_and_ngfw_num_string)
-            student_bootstrap_file = student_bootstrap_file.replace('STUDENTID', f'{student_number}')
+            student_bootstrap_file = student_bootstrap_file.replace('STUDENTID', f'{student_number + 1}')
             student_bootstrap_file = student_bootstrap_file.replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
             bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}-ngfw-{ngfw_number}'
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
