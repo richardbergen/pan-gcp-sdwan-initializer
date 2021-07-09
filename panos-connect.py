@@ -60,7 +60,7 @@ def main():
         panos_api_key = panos_create_apikey(username, password, ip)
 
     #if args.create_api_key and args.create_bootstrap:
-    if args.create_bootstrap:
+    if args.create_bootstrap and 'ip' in locals():
         if read_from_file(TMP_FILE):
             number_of_students_remaining = int(read_from_file(TMP_FILE))
             student_number = number_of_students_remaining
@@ -74,6 +74,25 @@ def main():
             print(f'Current student number: {student_number}')
         number_of_students_remaining = student_number - 1
         print(f'number_of_students_remaining: {number_of_students_remaining}')
+        panos_send_commands(panos_connection, command_type='configure', commands=[
+            'set deviceconfig system timezone US/Pacific',
+            f'set deviceconfig system hostname {number_of_students - 1}',
+            'set deviceconfig system dns-setting servers primary 1.0.0.1',
+            'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
+            'set template sdwan config vsys vsys1',
+            'set template sdwan config deviceconfig system',
+            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server address 172.16.0.50',
+            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server http-method POST',
+            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server protocol HTTP',
+            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server port 1337',
+            'set template sdwan config shared log-settings http CTF_HTTP format system headers Content-Type value text/html',
+            'set template sdwan config shared log-settings http CTF_HTTP format system name CTF',
+            'set template sdwan config shared log-settings http CTF_HTTP format system url-format /system',
+            'set template sdwan config shared log-settings http CTF_HTTP format system payload All',
+            'set template sdwan config shared log-settings system match-list "CTF HTTP Forward" send-http CTF_HTTP',
+            'set template sdwan config shared log-settings system match-list "CTF HTTP Forward" filter "( description contains \'Commit job succeeded\' )”',
+            'set device-group sdwan devices',
+            'set device-group sdwan reference-templates ctf-base'])
         #try:
         #    if read_from_file(TMP_FILE):
         #        number_of_students_remaining = int(read_from_file(TMP_FILE))
@@ -95,26 +114,6 @@ def main():
             os.remove(TMP_FILE)
         #vm_auth_key = '1111'
         create_bootstrap_terraform_files(student_number, vm_auth_key)
-
-        panos_send_commands(panos_connection, command_type='configure', commands=[
-            'set deviceconfig system timezone US/Pacific',
-            'set deviceconfig system hostname demo-panorama',
-            'set deviceconfig system dns-setting servers primary 1.0.0.1',
-            'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
-            'set template sdwan config vsys vsys1',
-            'set template sdwan config deviceconfig system',
-            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server address 172.16.0.50',
-            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server http-method POST',
-            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server protocol HTTP',
-            'set template sdwan config shared log-settings http CTF_HTTP server CTF_Server port 1337',
-            'set template sdwan config shared log-settings http CTF_HTTP format system headers Content-Type value text/html',
-            'set template sdwan config shared log-settings http CTF_HTTP format system name CTF',
-            'set template sdwan config shared log-settings http CTF_HTTP format system url-format /system',
-            'set template sdwan config shared log-settings http CTF_HTTP format system payload All',
-            'set template sdwan config shared log-settings system match-list "CTF HTTP Forward" send-http CTF_HTTP',
-            'set template sdwan config shared log-settings system match-list "CTF HTTP Forward" filter "( description contains \'Commit job succeeded\' )”',
-            'set device-group sdwan devices',
-            'set device-group sdwan reference-templates ctf-base'])
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
