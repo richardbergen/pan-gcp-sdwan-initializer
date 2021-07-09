@@ -76,7 +76,7 @@ def main():
         print(f'number_of_students_remaining: {number_of_students_remaining}')
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system timezone US/Pacific',
-            f'set deviceconfig system hostname {number_of_students - 1}',
+            f'set deviceconfig system hostname {student_number - 1}',
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
             'set template sdwan-template config vsys vsys1',
