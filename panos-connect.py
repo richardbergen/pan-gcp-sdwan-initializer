@@ -61,28 +61,48 @@ def main():
 
     #if args.create_api_key and args.create_bootstrap:
     if args.create_bootstrap and 'ip' in locals():
+        student_state = {
+            'number_of_students_entered': 0,
+            'student_number_processed': 0
+        }
+
         if read_from_file(TMP_FILE):
-            number_of_students_remaining = int(read_from_file(TMP_FILE))
-            student_number = number_of_students_remaining
-            print(f'Current student number: {student_number}')
-            print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
+            #number_of_students_remaining = int(read_from_file(TMP_FILE))
+            student_state_filedata = json.loads(read_from_file(TMP_FILE))
+            print('student_state_data ', student_state_filedata) ###
+            student_state['number_of_students_entered'] = student_state_filedata['number_of_students_entered'] ###
+
+            #student_number = number_of_students_remaining
+            print(f"Current student number: {student_state_filedata['student_number_processed']}")
+            #print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
+
         else:
             number_of_students = int(args.create_bootstrap)
             print(f'No config found: number of students entered: {number_of_students}')
-            print(write_to_file(TMP_FILE, f'{number_of_students - 1}'))
-            student_number = number_of_students
-            print(f'Current student number: {student_number}')
-        number_of_students_remaining = student_number - 1
-        print(f'number_of_students_remaining: {number_of_students_remaining}')
+
+            student_state['number_of_students_entered'] = number_of_students - 1 # counting from 0 ###
+
+            #print(write_to_file(TMP_FILE, f'{number_of_students - 1}'))
+            print(write_to_file(TMP_FILE, json.dumps(student_state))) ###
+
+            #student_number = number_of_students
+            print(f"Current student number being processed: {student_state['student_number_processed']}") ###
+
+        #number_of_students_remaining = student_number - 1
+        #print(f'number_of_students_remaining: {number_of_students_remaining}')
+
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system timezone US/Pacific',
-            f'set deviceconfig system hostname {student_number - 1}',
+            f"set deviceconfig system hostname {    ['student_number_processed']}",
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
             'set template sdwan-template config vsys vsys1',
             'set template sdwan-template config deviceconfig system',
             'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-template'])
+
+        student_state['student_number_processed'] += 1 ###
+
         #try:
         #    if read_from_file(TMP_FILE):
         #        number_of_students_remaining = int(read_from_file(TMP_FILE))
@@ -99,11 +119,13 @@ def main():
         #except:
         #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
         vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
-        if number_of_students_remaining < 1:
-            print('number_of_students_remaining < 1, removing file')
+        #if number_of_students_remaining < 1:
+        if student_state['number_of_students_processed'] > student_state['number_of_students_entered']:
+            print("student_state['number_of_students_processed'] > student_state['number_of_students_entered'], removing temp file")
+            #print('number_of_students_remaining < 1, removing file')
             os.remove(TMP_FILE)
-        #vm_auth_key = '1111'
-        create_bootstrap_terraform_files(student_number, vm_auth_key)
+        #create_bootstrap_terraform_files(student_number, vm_auth_key)
+        create_bootstrap_terraform_files(student_state['number_of_students_processed'], vm_auth_key)
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
