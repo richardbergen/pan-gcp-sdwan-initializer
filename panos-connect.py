@@ -93,7 +93,7 @@ def main():
 
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system timezone US/Pacific',
-            f"set deviceconfig system hostname {    ['student_number_processed']}",
+            f"set deviceconfig system hostname {student_state['student_number_processed']}",
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
             'set template sdwan-template config vsys vsys1',
