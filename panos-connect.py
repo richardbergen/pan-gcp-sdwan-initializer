@@ -120,12 +120,12 @@ def main():
         #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
         vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
         #if number_of_students_remaining < 1:
-        if student_state['number_of_students_processed'] > student_state['number_of_students_entered']:
-            print("student_state['number_of_students_processed'] > student_state['number_of_students_entered'], removing temp file")
+        if student_state['student_number_processed'] > student_state['number_of_students_entered']:
+            print("student_state['student_number_processed'] > student_state['number_of_students_entered'], removing temp file")
             #print('number_of_students_remaining < 1, removing file')
             os.remove(TMP_FILE)
         #create_bootstrap_terraform_files(student_number, vm_auth_key)
-        create_bootstrap_terraform_files(student_state['number_of_students_processed'], vm_auth_key)
+        create_bootstrap_terraform_files(student_state['student_number_processed'], vm_auth_key)
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
