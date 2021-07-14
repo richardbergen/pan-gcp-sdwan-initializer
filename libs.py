@@ -37,8 +37,10 @@ def read_from_file(filename):
     #    file_contents = file_in.read()
     #    return file_contents
     if os.path.exists(filename):
+        print('TMP file found (libs).')
         with open(filename, 'r', encoding = 'utf-8') as file_in:
             file_contents = file_in.read()
         return file_contents
     else:
+        print('TMP NOT file found (libs).')
         return False

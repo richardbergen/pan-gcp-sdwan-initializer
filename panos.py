@@ -195,7 +195,7 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
         code = ''.join(random.choice(chars) for _ in range(size))
         return code
 
-    print('Creating bootstrap files.')
+    print(f'Creating bootstrap files for student number: {student_number}')
     required_files = [f'{TERRAFORM_PATH}/gcp_bucket.template', f'{BOOTSTRAP_PATH}/init-cfg.template', f'{TERRAFORM_PATH}/pan_fw.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
     if required_files == files_that_exist:

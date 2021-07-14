@@ -67,6 +67,7 @@ def main():
         }
 
         if read_from_file(TMP_FILE):
+            print('TMP file found')
             #number_of_students_remaining = int(read_from_file(TMP_FILE))
             student_state_filedata = json.loads(read_from_file(TMP_FILE))
             print('student_state_data ', student_state_filedata) ###
@@ -133,7 +134,9 @@ def main():
         print('after')
         print(f"student_state['student_number_processed'] {student_state['student_number_processed']}")
         print(f"student_state['number_of_students_entered'] {student_state['number_of_students_entered']}")
-        print(write_to_file(TMP_FILE, json.dumps(student_state))) ###
+        print('writing to file')
+        write_to_file(TMP_FILE, json.dumps(student_state)) ###d
+        print('Reading back from file')
         print(json.loads(read_from_file(TMP_FILE)), '\n')
 
 
