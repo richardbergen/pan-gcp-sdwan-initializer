@@ -71,9 +71,10 @@ def main():
             student_state_filedata = json.loads(read_from_file(TMP_FILE))
             print('student_state_data ', student_state_filedata) ###
             student_state['number_of_students_entered'] = student_state_filedata['number_of_students_entered'] ###
+            student_state['student_number_processed'] = student_state_filedata['student_number_processed'] ###
 
             #student_number = number_of_students_remaining
-            print(f"Current student number: {student_state_filedata['student_number_processed']}")
+            print(f"Current student number: {student_state['student_number_processed']}")
             #print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
 
         else:
@@ -93,16 +94,14 @@ def main():
 
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system timezone US/Pacific',
-            f"set deviceconfig system hostname {student_state['student_number_processed']}",
+            f"set deviceconfig system hostname Panorama-student-{student_state['student_number_processed']}",
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
             'set template sdwan-template config vsys vsys1',
             'set template sdwan-template config deviceconfig system',
             'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-template'])
-
-        student_state['student_number_processed'] += 1 ###
-
+        
         #try:
         #    if read_from_file(TMP_FILE):
         #        number_of_students_remaining = int(read_from_file(TMP_FILE))
@@ -126,6 +125,9 @@ def main():
             os.remove(TMP_FILE)
         #create_bootstrap_terraform_files(student_number, vm_auth_key)
         create_bootstrap_terraform_files(student_state['student_number_processed'], vm_auth_key)
+
+        student_state['student_number_processed'] += 1 ###
+        print(write_to_file(TMP_FILE, json.dumps(student_state))) ###
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
