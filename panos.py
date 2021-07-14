@@ -222,17 +222,17 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
             fout.write('\n')
 
         for ngfw_number in range(NUMBER_OF_NGFWS):
-            project_id_and_ngfw_num_string = f'student-{student_number - 1}-ngfw-{ngfw_number}'            
+            project_id_and_ngfw_num_string = f'student-{student_number}-ngfw-{ngfw_number}'            
             student_terraform_file = str(gcp_bucket_template_content)
             student_terraform_file = student_terraform_file.replace('firewallname', project_id_and_ngfw_num_string)
-            gcp_bucket_tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number - 1}_ngfw_{ngfw_number}.tf'
+            gcp_bucket_tf_filename = f'{TERRAFORM_PATH}/gcp_bucket_student_{student_number}_ngfw_{ngfw_number}.tf'
             with open(gcp_bucket_tf_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_terraform_file)
                 fout.write('\n')
 
             student_bootstrap_file = str(bootstrap_template_content)
             student_bootstrap_file = student_bootstrap_file.replace('firewallname', project_id_and_ngfw_num_string)
-            student_bootstrap_file = student_bootstrap_file.replace('STUDENTID', f'{student_number - 1}')
+            student_bootstrap_file = student_bootstrap_file.replace('STUDENTID', f'{student_number}')
             student_bootstrap_file = student_bootstrap_file.replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
             bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number - 1}-ngfw-{ngfw_number}'
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:

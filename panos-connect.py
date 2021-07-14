@@ -63,14 +63,15 @@ def main():
     if args.create_bootstrap and 'ip' in locals():
         student_state = {
             'number_of_students_entered': 0,
-            'student_number_processed': 0
+            'student_number_processed': 0,
+            'students_remaining': 0
         }
 
         #if read_from_file(TMP_FILE):
         if os.path.exists(TMP_FILE):
             #number_of_students_remaining = int(read_from_file(TMP_FILE))
             student_state_filedata = json.loads(read_from_file(TMP_FILE))
-            print('student_state_data ', student_state_filedata) ###
+            print('student_state_filedata ', student_state_filedata) ###
             student_state['number_of_students_entered'] = student_state_filedata['number_of_students_entered'] ###
             student_state['student_number_processed'] = student_state_filedata['student_number_processed'] ###
 
@@ -128,7 +129,7 @@ def main():
             #print('number_of_students_remaining < 1, removing file')
             os.remove(TMP_FILE)
         #create_bootstrap_terraform_files(student_number, vm_auth_key)
-        create_bootstrap_terraform_files(student_state['student_number_processed'], vm_auth_key)
+        create_bootstrap_terraform_files(int(student_state['student_number_processed']), vm_auth_key)
 
         student_state['student_number_processed'] += 1 ###
         print('after')
