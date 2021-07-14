@@ -22,7 +22,7 @@ args = parser.parse_args()
 
 def main():
 
-    current_student_number = args.current_student_number
+    current_student_number = int(args.current_student_number)
 
     panos_connection = None
 
