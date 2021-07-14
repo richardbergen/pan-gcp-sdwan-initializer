@@ -66,8 +66,8 @@ def main():
             'student_number_processed': 0
         }
 
-        if read_from_file(TMP_FILE):
-            print('TMP file found')
+        #if read_from_file(TMP_FILE):
+        if os.path.exists(TMP_FILE):
             #number_of_students_remaining = int(read_from_file(TMP_FILE))
             student_state_filedata = json.loads(read_from_file(TMP_FILE))
             print('student_state_data ', student_state_filedata) ###
