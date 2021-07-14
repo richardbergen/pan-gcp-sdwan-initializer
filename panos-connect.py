@@ -84,7 +84,7 @@ def main():
             student_state['number_of_students_entered'] = number_of_students - 1 # counting from 0 ###
 
             #print(write_to_file(TMP_FILE, f'{number_of_students - 1}'))
-            print(write_to_file(TMP_FILE, json.dumps(student_state))) ###
+            write_to_file(TMP_FILE, json.dumps(student_state)) ###
 
             #student_number = number_of_students
             print(f"Current student number being processed: {student_state['student_number_processed']}") ###
@@ -119,6 +119,9 @@ def main():
         #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
         vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
         #if number_of_students_remaining < 1:
+        print('before')
+        print(f"student_state['student_number_processed'] {student_state['student_number_processed']}")
+        print(f"student_state['number_of_students_entered'] {student_state['number_of_students_entered']}")
         if student_state['student_number_processed'] > student_state['number_of_students_entered']:
             print("student_state['student_number_processed'] > student_state['number_of_students_entered'], removing temp file")
             #print('number_of_students_remaining < 1, removing file')
@@ -127,7 +130,12 @@ def main():
         create_bootstrap_terraform_files(student_state['student_number_processed'], vm_auth_key)
 
         student_state['student_number_processed'] += 1 ###
+        print('after')
+        print(f"student_state['student_number_processed'] {student_state['student_number_processed']}")
+        print(f"student_state['number_of_students_entered'] {student_state['number_of_students_entered']}")
         print(write_to_file(TMP_FILE, json.dumps(student_state))) ###
+        print(json.loads(read_from_file(TMP_FILE)), '\n')
+
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
