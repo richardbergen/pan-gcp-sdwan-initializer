@@ -234,7 +234,7 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
             student_bootstrap_file = student_bootstrap_file.replace('firewallname', project_id_and_ngfw_num_string)
             student_bootstrap_file = student_bootstrap_file.replace('STUDENTID', f'{student_number}')
             student_bootstrap_file = student_bootstrap_file.replace('VMAUTHKEYPLACEHOLDER', vm_auth_key)
-            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number - 1}-ngfw-{ngfw_number}'
+            bootstrap_filename = f'{BOOTSTRAP_PATH}/init-cfg.student-{student_number}-ngfw-{ngfw_number}'
             with open(bootstrap_filename, 'w', encoding='utf-8') as fout:
                 fout.write(student_bootstrap_file)
                 fout.write('\n')
