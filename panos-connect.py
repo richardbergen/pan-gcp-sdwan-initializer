@@ -107,8 +107,10 @@ def main():
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
             'set template sdwan-template config vsys vsys1',
             'set template sdwan-template config deviceconfig system',
+            'set template-stack sdwan-stack templates sdwan-template',
+            'set template-stack sdwan-stack settings default-vsys vsys1',
             'set device-group sdwan devices',
-            'set device-group sdwan reference-templates sdwan-template'])
+            'set device-group sdwan reference-templates sdwan-stack'])
         
         #try:
         #    if read_from_file(TMP_FILE):
