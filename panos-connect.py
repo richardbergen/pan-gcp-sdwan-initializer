@@ -96,9 +96,8 @@ def main():
 
         #number_of_students_remaining = student_number - 1
         #print(f'number_of_students_remaining: {number_of_students_remaining}')
-
-        panos_send_commands(panos_connection, command_type='configure',commands=[
-            'set cli scripting-mode on',
+        panos_send_commands(panos_connection, command_type='operational', commands=['set cli scripting-mode on'])
+        panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system timezone US/Pacific',
             #f"set deviceconfig system hostname Panorama-student-{student_state['student_number_processed']}",
             f"set deviceconfig system hostname Panorama-student-{current_student_number}",
