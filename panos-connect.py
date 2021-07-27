@@ -1,6 +1,7 @@
 
 import logging, argparse, sys, json, os
-from panos import check_if_panos_is_ready, panos_configure_admin_acct, panos_send_commands, panos_create_apikey, panos_create_vm_auth_key, create_bootstrap_terraform_files
+from time import sleep
+from panos import check_if_panos_is_ready, panos_configure_admin_acct, panos_send_commands, panos_create_apikey, panos_create_vm_auth_key, create_bootstrap_terraform_files, panos_commit
 from libs import make_http_request, convert_xml_to_dict, write_to_file, read_from_file
 
 TMP_FILE = 'tracker.tmp'
@@ -102,6 +103,7 @@ def main():
             f"set deviceconfig system hostname Panorama-student-{current_student_number}",
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org'])
+        sleep(3)
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set template sdwan-template config vsys vsys1',
             'set template sdwan-template config  deviceconfig system ',
@@ -110,6 +112,7 @@ def main():
             'set template-stack sdwan-stack variable $wan1_ip type ip-netmask 1.1.1.1/32',
             'set template-stack sdwan-stack variable $wan2_ip type ip-netmask 1.1.1.2/32',
             'set template-stack sdwan-stack variable $lan_ip type ip-netmask 1.1.1.3/32'])
+        sleep(3)
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set template-stack sdwan-stack config  vsys vsys1 zone Untrust network layer3',
             'set template-stack sdwan-stack config  vsys vsys1 zone Trust network layer3',
@@ -117,6 +120,7 @@ def main():
             'set template-stack sdwan-stack config  network profiles interface-management-profile Ping ping yes',
             'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-stack'])
+        panos_commit(panos_connection)
         
         #try:
         #    if read_from_file(TMP_FILE):

@@ -162,7 +162,7 @@ def panos_send_commands(panos_connection, command_type, commands):
     elif command_type == 'configure':
         panos_enter_config_mode(panos_connection)
         send_commands(panos_connection, commands)
-        panos_commit(panos_connection)
+        #panos_commit(panos_connection)
         panos_connection.exit_config_mode()
 
 def panos_create_apikey(username, password, host, **kwargs):
