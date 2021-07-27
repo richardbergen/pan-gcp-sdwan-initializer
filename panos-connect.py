@@ -106,9 +106,16 @@ def main():
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
             'set template sdwan-template config vsys vsys1',
-            'set template sdwan-template config deviceconfig system',
+            'set template sdwan-template config  deviceconfig system ',
             'set template-stack sdwan-stack templates sdwan-template',
             'set template-stack sdwan-stack settings default-vsys vsys1',
+            'set template-stack sdwan-stack variable $wan1_ip type ip-netmask 1.1.1.1/32',
+            'set template-stack sdwan-stack variable $wan2_ip type ip-netmask 1.1.1.2/32',
+            'set template-stack sdwan-stack variable $lan_ip type ip-netmask 1.1.1.3/32',
+            'set template-stack sdwan-stack config  vsys vsys1 zone Untrust network layer3',
+            'set template-stack sdwan-stack config  vsys vsys1 zone Trust network layer3',
+            'set template-stack sdwan-stack config  vsys vsys1 zone VPN network layer3',
+            'set template-stack sdwan-stack config  network profiles interface-management-profile Ping ping yes',
             'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-stack'])
         
