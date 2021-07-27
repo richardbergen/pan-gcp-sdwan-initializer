@@ -60,9 +60,6 @@ def main():
     if 'ip' in locals():
         panos_send_commands(panos_connection, command_type='operational', commands=['show clock'])
 
-    if args.create_api_key:
-        panos_api_key = panos_create_apikey(username, password, ip)
-
     #if args.create_api_key and args.create_bootstrap:
     if args.create_bootstrap and 'ip' in locals():
         #student_state = {
@@ -157,6 +154,8 @@ def main():
         #print('Reading back from file')
         #print(json.loads(read_from_file(TMP_FILE)), '\n')
 
+    if args.create_api_key:
+        panos_api_key = panos_create_apikey(username, password, ip)
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
