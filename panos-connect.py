@@ -104,14 +104,16 @@ def main():
             #f"set deviceconfig system hostname Panorama-student-{student_state['student_number_processed']}",
             f"set deviceconfig system hostname Panorama-student-{current_student_number}",
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
-            'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org',
+            'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org'])
+        panos_send_commands(panos_connection, command_type='configure', commands=[
             'set template sdwan-template config vsys vsys1',
             'set template sdwan-template config  deviceconfig system ',
             'set template-stack sdwan-stack templates sdwan-template',
             'set template-stack sdwan-stack settings default-vsys vsys1',
             'set template-stack sdwan-stack variable $wan1_ip type ip-netmask 1.1.1.1/32',
             'set template-stack sdwan-stack variable $wan2_ip type ip-netmask 1.1.1.2/32',
-            'set template-stack sdwan-stack variable $lan_ip type ip-netmask 1.1.1.3/32',
+            'set template-stack sdwan-stack variable $lan_ip type ip-netmask 1.1.1.3/32'])
+        panos_send_commands(panos_connection, command_type='configure', commands=[
             'set template-stack sdwan-stack config  vsys vsys1 zone Untrust network layer3',
             'set template-stack sdwan-stack config  vsys vsys1 zone Trust network layer3',
             'set template-stack sdwan-stack config  vsys vsys1 zone VPN network layer3',
