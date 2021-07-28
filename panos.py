@@ -154,7 +154,7 @@ def panos_send_commands(panos_connection, command_type, commands):
                 print(command)
                 print(panos_connection.send_command(command))
         elif isinstance(commands, str):
-            print(command)
+            print(commands)
             print(panos_connection.send_command(commands))
     
     if command_type == 'operational':
