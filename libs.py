@@ -26,7 +26,7 @@ def make_http_request_retry_wrapper(host, url, **kwargs):
         print('result ', result)
         if result:
             print('true')
-            break
+            return result
         else:
             retry_counter += 1
             print(f'HTTP request failed. Sleeping for {HTTP_RETRY_TIMER_SEC} sec for retry: {retry_counter}/{MAX_HTTP_RETRIES}.')
