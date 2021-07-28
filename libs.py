@@ -1,6 +1,6 @@
 import http.client as hc
 import xmltodict
-import ssl, os
+import ssl, os, time
 
 HTTP_RETRY_TIMER_SEC = 5
 MAX_HTTP_RETRIES = 30
@@ -23,7 +23,9 @@ def make_http_request_retry_wrapper(host, url, **kwargs):
     retry_counter = 0
     while retry_counter < MAX_HTTP_RETRIES:
         result = make_http_request(host, url, **kwargs)
+        print('result ', result)
         if result:
+            print('true')
             break
         else:
             retry_counter += 1

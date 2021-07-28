@@ -171,6 +171,8 @@ def panos_create_apikey(username, password, host, **kwargs):
 
     # make http call with creds
     http_result_xml = make_http_request_retry_wrapper(host, generate_api_key_url, **kwargs)
+
+    print('http_result_xml: ', http_result_xml)
     
     api_response = convert_xml_to_dict(http_result_xml)
 
