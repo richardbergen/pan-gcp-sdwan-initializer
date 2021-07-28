@@ -114,6 +114,10 @@ def main():
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org'])
         #sleep(3)
         panos_send_commands(panos_connection, command_type='configure', commands=[
+            'set deviceconfig system device-telemetry threat-prevention no',
+            'set deviceconfig system device-telemetry device-health-performance no',
+            'set deviceconfig system device-telemetry product-usage no',
+            'set deviceconfig system device-telemetry region americas',
             'set template sdwan-template config vsys vsys1',
             'set template sdwan-template config  deviceconfig system ',
             'set template-stack sdwan-stack templates sdwan-template',
