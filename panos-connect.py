@@ -117,10 +117,10 @@ def main():
             'set template-stack sdwan-stack variable $lan_ip type ip-netmask 1.1.1.3/32'])
         #sleep(3)
         panos_send_commands(panos_connection, command_type='configure', commands=[
-            'set template-stack sdwan-stack config  vsys vsys1 zone Untrust network layer3',
-            'set template-stack sdwan-stack config  vsys vsys1 zone Trust network layer3',
-            'set template-stack sdwan-stack config  vsys vsys1 zone VPN network layer3',
-            'set template-stack sdwan-stack config  network profiles interface-management-profile Ping ping yes',
+            'set template sdwan-template config  vsys vsys1 zone Untrust network layer3',
+            'set template sdwan-template config  vsys vsys1 zone Trust network layer3',
+            'set template sdwan-template config  vsys vsys1 zone VPN network layer3',
+            'set template sdwan-template config  network profiles interface-management-profile Ping ping yes',
             'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-stack'])
         panos_commit(panos_connection)

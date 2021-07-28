@@ -137,7 +137,7 @@ def panos_configure_admin_acct(panos_connection, new_password):
         time.sleep(.5)
         panos_connection.read_channel()
 
-    print('Setting the admin account with a new password.')
+    print('Setting the admin account with the new password.')
     panos_enter_config_mode(panos_connection)
     panos_set_cmd_admin_acct_passwd(panos_connection, new_password)
     panos_commit(panos_connection)
