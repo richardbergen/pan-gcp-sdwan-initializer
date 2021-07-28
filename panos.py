@@ -147,7 +147,7 @@ def panos_send_commands(panos_connection, command_type, commands):
     """
     Accepts a list of commands, or individual command as a string
     """
-    print('Sending command: ', end='')
+    print('Sending command(s):')
     def send_commands(panos_connection, commands):
         if isinstance(commands, list):
             for command in commands:
@@ -170,13 +170,8 @@ def panos_create_apikey(username, password, host, **kwargs):
     generate_api_key_url = f'/api/?type=keygen&user={username}&password={password}'
 
     # make http call with creds
-    while True:
-        http_result_xml = make_http_request_retry_wrapper(host, generate_api_key_url, **kwargs)
-        if http_result_xml:
-            break
-        else:
-            time.sleep(5)
-
+    http_result_xml = make_http_request_retry_wrapper(host, generate_api_key_url, **kwargs)
+    
     api_response = convert_xml_to_dict(http_result_xml)
 
     if api_response != None:
