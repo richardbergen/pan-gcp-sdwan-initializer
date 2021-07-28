@@ -66,6 +66,9 @@ def main():
         
     #if args.create_api_key and args.create_bootstrap:
     if args.create_bootstrap and 'ip' in locals():
+        vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
+        create_bootstrap_terraform_files(current_student_number, vm_auth_key)
+
         #student_state = {
         #    'number_of_students_entered': 0,
         #    'student_number_processed': 0,
@@ -140,7 +143,7 @@ def main():
         #    print(f'number_of_students_remaining: {number_of_students_remaining}')
         #except:
         #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
-        vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
+        ### vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
         #if number_of_students_remaining < 1:
         #print('before')
         #print(f"student_state['student_number_processed'] {student_state['student_number_processed']}")
@@ -150,7 +153,7 @@ def main():
         #    #print('number_of_students_remaining < 1, removing file')
         #    os.remove(TMP_FILE)
         ##create_bootstrap_terraform_files(student_number, vm_auth_key)
-        create_bootstrap_terraform_files(current_student_number, vm_auth_key)
+        #create_bootstrap_terraform_files(current_student_number, vm_auth_key)
 
         #student_state['student_number_processed'] += 1 ###
         #print('after')
