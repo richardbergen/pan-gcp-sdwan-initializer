@@ -170,7 +170,10 @@ def panos_create_apikey(username, password, host, **kwargs):
     generate_api_key_url = f'/api/?type=keygen&user={username}&password={password}'
 
     # make http call with creds
-    http_result_xml = make_http_request(host, generate_api_key_url, **kwargs)
+    try:
+        http_result_xml = make_http_request(host, generate_api_key_url, **kwargs)
+    except:
+        panos_create_apikey(username, password, host, **kwargs)
 
     api_response = convert_xml_to_dict(http_result_xml)
 
