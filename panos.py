@@ -173,6 +173,8 @@ def panos_create_apikey(username, password, host, **kwargs):
     try:
         http_result_xml = make_http_request(host, generate_api_key_url, **kwargs)
     except:
+        print('Unable to make http call, sleeping 10.')
+        time.sleep(10)
         panos_create_apikey(username, password, host, **kwargs)
 
     api_response = convert_xml_to_dict(http_result_xml)
