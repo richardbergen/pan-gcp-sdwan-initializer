@@ -1,8 +1,8 @@
 
 import logging, argparse, sys, json, os
-from time import sleep
+#from time import sleep
 from panos import check_if_panos_is_ready, panos_configure_admin_acct, panos_send_commands, panos_create_apikey, panos_create_vm_auth_key, create_bootstrap_terraform_files, panos_commit
-from libs import make_http_request, convert_xml_to_dict, write_to_file, read_from_file
+#from libs import convert_xml_to_dict, write_to_file, read_from_file
 
 TMP_FILE = 'tracker.tmp'
 
@@ -144,7 +144,6 @@ def main():
             'set template sdwan-template config  vsys vsys1 zone VPN network layer3 [ ]',
             'set template sdwan-template config  vsys vsys1 zone Untrust network layer3 [ ethernet1/1 ethernet1/2 ]',
             'set template sdwan-template config  vsys vsys1 zone Trust network layer3 ethernet1/3',
-            'set template sdwan-template config  vsys vsys1 zone VPN network layer3 ',
             #'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-stack'])
         panos_commit(panos_connection)

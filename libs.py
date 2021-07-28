@@ -2,6 +2,9 @@ import http.client as hc
 import xmltodict
 import ssl, os
 
+HTTP_RETRY_TIMER_SEC = 5
+MAX_HTTP_RETRIES = 30
+
 def make_http_request(host, url, **kwargs):
     if 'port' in kwargs:
         port = kwargs['port']
@@ -14,6 +17,18 @@ def make_http_request(host, url, **kwargs):
         return httpcon.getresponse().read()
     except Exception as e:
         print(f'An error occurred making http request: {e}')
+        return False
+
+def make_http_request_retry_wrapper(host, url, **kwargs):
+    retry_counter = 0
+    while retry_counter < MAX_HTTP_RETRIES:
+        result = make_http_request(host, url, **kwargs)
+        if result:
+            break
+        else:
+            retry_counter += 1
+            print(f'HTTP request failed. Sleeping for {HTTP_RETRY_TIMER_SEC} sec for retry: {retry_counter}/{MAX_HTTP_RETRIES}.')
+            time.sleep(HTTP_RETRY_TIMER_SEC)
 
 def convert_xml_to_dict(xml_data):
     try:

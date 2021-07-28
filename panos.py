@@ -1,5 +1,5 @@
 from netmiko import ConnectHandler, ssh_exception
-from libs import make_http_request, convert_xml_to_dict
+from libs import make_http_request, convert_xml_to_dict, make_http_request_retry_wrapper
 import time, re, sys, os, logging, copy, random, string
 
 NUMBER_OF_NGFWS = 3 # 2 spokes, 1 hub. Used to generate terraform files / bootstrap files
@@ -170,12 +170,12 @@ def panos_create_apikey(username, password, host, **kwargs):
     generate_api_key_url = f'/api/?type=keygen&user={username}&password={password}'
 
     # make http call with creds
-    try:
-        http_result_xml = make_http_request(host, generate_api_key_url, **kwargs)
-    except:
-        print('Unable to make http call, sleeping 10.')
-        time.sleep(10)
-        panos_create_apikey(username, password, host, **kwargs)
+    while True:
+        http_result_xml = make_http_request_retry_wrapper(host, generate_api_key_url, **kwargs)
+        if http_result_xml:
+            break
+        else:
+            time.sleep(5)
 
     api_response = convert_xml_to_dict(http_result_xml)
 
@@ -190,7 +190,7 @@ def panos_create_vm_auth_key(host, panos_api_key, **kwargs):
     VM_AUTH_KEY_LIFETIME = 24 # in hours
 
     vm_auth_key_path = f"/api/?type=op&cmd=<request><bootstrap><vm-auth-key><generate><lifetime>{VM_AUTH_KEY_LIFETIME}</lifetime></generate></vm-auth-key></bootstrap></request>&key={panos_api_key}"
-    http_result_xml = make_http_request(host, vm_auth_key_path, **kwargs)
+    http_result_xml = make_http_request_retry_wrapper(host, vm_auth_key_path, **kwargs)
     vm_auth_key = re.search(r"\d{4,}", http_result_xml.decode('utf-8')).group()
     return vm_auth_key
 
