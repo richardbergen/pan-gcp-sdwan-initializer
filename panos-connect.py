@@ -150,6 +150,17 @@ def main():
             'set template sdwan-template config  vsys vsys1 zone VPN network layer3 [ ]',
             'set template sdwan-template config  vsys vsys1 zone Untrust network layer3 [ ethernet1/1 ethernet1/2 ]',
             'set template sdwan-template config  vsys vsys1 zone Trust network layer3 ethernet1/3',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.18.0.0 path-monitor enable no',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.18.0.0 nexthop ip-address $wan1_next_hop',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.18.0.0 interface ethernet1/1',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.18.0.0 metric 10',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.18.0.0 destination 198.18.0.0/16',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 path-monitor enable no',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 nexthop ip-address $wan2_next_hop',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 interface ethernet1/1',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 metric 10',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 destination 198.19.0.0/16',
+
             #'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-stack'])
         panos_commit(panos_connection)
