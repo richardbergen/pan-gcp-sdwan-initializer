@@ -13,7 +13,7 @@ parser.add_argument("--ip", help="IP address of PAN-OS device")
 parser.add_argument("--login-username", help="Username to log in with")
 parser.add_argument("--login-password", help="Password to use")
 parser.add_argument("--priv-ssh-key", help="Path to ssh private key file")
-parser.add_argument("--change-password-to", help="Path to ssh private key file")
+parser.add_argument("--change-password-to", help="Set password")
 parser.add_argument("--create-bootstrap", help="Creates bootstrap folder structure and necessary files for students")
 parser.add_argument("--panorama-serial-number", help="Serial number for Panorama registration")
 parser.add_argument("--create-api-key", help="Creates API key for PAN-OS device", action="store_true")
@@ -128,18 +128,12 @@ def main():
             'set template sdwan-template variable $wan1_next_hop type ip-netmask 1.1.1.1/32',
             'set template sdwan-template variable $wan2_next_hop type ip-netmask 1.1.1.2/32',
             'set template sdwan-template config  network profiles interface-management-profile Ping ping yes',
-            'set template sdwan-template config  network interface ethernet ethernet1/1 layer3 ndp-proxy enabled no',
             'set template sdwan-template config  network interface ethernet ethernet1/1 layer3 ip $wan1_ip ',
             'set template sdwan-template config  network interface ethernet ethernet1/1 layer3 interface-management-profile Ping',
-            'set template sdwan-template config  network interface ethernet ethernet1/1 layer3 lldp enable no',
-            'set template sdwan-template config  network interface ethernet ethernet1/2 layer3 ndp-proxy enabled no',
             'set template sdwan-template config  network interface ethernet ethernet1/2 layer3 ip $wan2_ip ',
             'set template sdwan-template config  network interface ethernet ethernet1/2 layer3 interface-management-profile Ping',
-            'set template sdwan-template config  network interface ethernet ethernet1/2 layer3 lldp enable no',
-            'set template sdwan-template config  network interface ethernet ethernet1/3 layer3 ndp-proxy enabled no',
-            'set template sdwan-template config  network interface ethernet ethernet1/3 layer3 ip $lan_ip ',
+            'set template sdwan-template config  network interface ethernet ethernet1/3 layer3 dhcp-client',
             'set template sdwan-template config  network interface ethernet ethernet1/3 layer3 interface-management-profile Ping',
-            'set template sdwan-template config  network interface ethernet ethernet1/3 layer3 lldp enable no',
             'set template sdwan-template config  network virtual-router corp ecmp algorithm ip-modulo ',
             'set template sdwan-template config  network virtual-router corp interface [ ethernet1/1 ethernet1/2 ethernet1/3 ]'])
         #sleep(3)
@@ -157,7 +151,7 @@ def main():
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.18.0.0 destination 198.18.0.0/16',
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 nexthop ip-address $wan2_next_hop',
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 path-monitor enable no',
-            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 interface ethernet1/1',
+            'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 interface ethernet1/2',
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 metric 10',
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 destination 198.19.0.0/16',
 
