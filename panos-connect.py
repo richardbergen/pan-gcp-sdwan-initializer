@@ -59,7 +59,7 @@ def main():
         password = new_password # password has been changed, so use the new_password moving forward.
         
     if 'ip' in locals():
-        panos_send_commands(panos_connection, command_type='operational', commands=['show clock'])
+        panos_send_commands(panos_connection, command_type='operational', commands=['show clock', 'request license fetch'])
 
     if args.panorama_serial_number:
         panos_send_commands(panos_connection, command_type='operational', commands=[f'set serial-number {args.panorama_serial_number}', 'request license fetch'])
