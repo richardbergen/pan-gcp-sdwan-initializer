@@ -124,7 +124,7 @@ def main():
             'set template-stack sdwan-stack settings default-vsys vsys1',
             'set template sdwan-template variable $wan1_ip type ip-netmask 1.1.1.1/32',
             'set template sdwan-template variable $wan2_ip type ip-netmask 1.1.1.2/32',
-            'set template sdwan-template variable $lan_ip type ip-netmask 1.1.1.3/32',
+            #'set template sdwan-template variable $lan_ip type ip-netmask 1.1.1.3/32',
             'set template sdwan-template variable $wan1_next_hop type ip-netmask 1.1.1.1/32',
             'set template sdwan-template variable $wan2_next_hop type ip-netmask 1.1.1.2/32',
             'set template sdwan-template config  network profiles interface-management-profile Ping ping yes',
