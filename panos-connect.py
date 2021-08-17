@@ -156,7 +156,19 @@ def main():
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 destination 198.19.0.0/16',
 
             #'set device-group sdwan devices',
-            'set device-group sdwan reference-templates sdwan-stack'])
+            'set device-group sdwan reference-templates sdwan-stack',
+            'set device-group sdwan pre-rulebase security rules "permit all" target negate no',
+            'set device-group sdwan pre-rulebase security rules "permit all" to any',
+            'set device-group sdwan pre-rulebase security rules "permit all" from any',
+            'set device-group sdwan pre-rulebase security rules "permit all" source any',
+            'set device-group sdwan pre-rulebase security rules "permit all" destination any',
+            'set device-group sdwan pre-rulebase security rules "permit all" source-user any',
+            'set device-group sdwan pre-rulebase security rules "permit all" category any',
+            'set device-group sdwan pre-rulebase security rules "permit all" application any',
+            'set device-group sdwan pre-rulebase security rules "permit all" service any',
+            'set device-group sdwan pre-rulebase security rules "permit all" source-hip any',
+            'set device-group sdwan pre-rulebase security rules "permit all" destination-hip any',
+            'set device-group sdwan pre-rulebase security rules "permit all" action allow'])
         panos_commit(panos_connection)
         
         #try:
