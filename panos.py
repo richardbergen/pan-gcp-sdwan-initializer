@@ -169,7 +169,6 @@ def panos_create_apikey(username, password, host, **kwargs):
     print('Creating API key.')
     generate_api_key_url = f'/api/?type=keygen&user={username}&password={password}'
 
-    # make http call with creds
     http_result_xml = make_http_request_retry_wrapper(host, generate_api_key_url, **kwargs)
 
     print('http_result_xml: ', http_result_xml)
@@ -178,7 +177,6 @@ def panos_create_apikey(username, password, host, **kwargs):
 
     if api_response != None:
         if api_response['response']['@status'] == 'success':
-            #print('API key is: ', api_response['response']['result']['key'])
             return api_response['response']['result']['key']
         else:
             print('API Key generation was NOT successful. Error: ' + api_response['response']['result']['msg'])
@@ -201,8 +199,6 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
     required_files = [f'{TERRAFORM_PATH}/gcp_bucket.template', f'{BOOTSTRAP_PATH}/init-cfg.template', f'{TERRAFORM_PATH}/pan_fw.template']
     files_that_exist = [file for file in required_files if os.path.isfile(file)]
     if required_files == files_that_exist:
-        #student_terraform_files = []   
-        #student_bootstrap_files = []
 
         with open(f'{TERRAFORM_PATH}/gcp_bucket.template', 'r', encoding = 'utf-8') as fout:
             gcp_bucket_template_content = fout.read()
@@ -214,11 +210,9 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
             pan_fw_template_content = fout.read()
         
         random_project_id = random_alnum().lower()
-        #for student_number in range(number_of_students):  
 
         pan_fw_tf_filename = f'{TERRAFORM_PATH}/pan_fw.tf'
         pan_fw_template_file = str(pan_fw_template_content)
-        #pan_fw_template_file = pan_fw_template_file.replace('STUDENTID', f'student-{student_number}')
         with open(pan_fw_tf_filename, 'w', encoding='utf-8') as fout:
             fout.write(pan_fw_template_file)
             fout.write('\n')
@@ -243,5 +237,3 @@ def create_bootstrap_terraform_files(student_number, vm_auth_key):
         
     else:
         sys.exit('ERROR: Required template files for bootstrapping are missing.')
-
-    #print(student_terraform_files)

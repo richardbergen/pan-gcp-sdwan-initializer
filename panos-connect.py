@@ -72,47 +72,12 @@ def main():
         vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
         create_bootstrap_terraform_files(current_student_number, vm_auth_key)
 
-        #student_state = {
-        #    'number_of_students_entered': 0,
-        #    'student_number_processed': 0,
-        #    'students_remaining': 0
-        #}
-
-        #if read_from_file(TMP_FILE):
-        #if os.path.exists(TMP_FILE):
-        #    #number_of_students_remaining = int(read_from_file(TMP_FILE))
-        #    student_state_filedata = json.loads(read_from_file(TMP_FILE))
-        #    print('student_state_filedata ', student_state_filedata) ###
-        #    student_state['number_of_students_entered'] = student_state_filedata['number_of_students_entered'] ###
-        #    student_state['student_number_processed'] = student_state_filedata['student_number_processed'] ###
-#
-        #    #student_number = number_of_students_remaining
-        #    print(f"Current student number: {student_state['student_number_processed']}")
-        #    #print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
-#
-        #else:
-        #    number_of_students = int(args.create_bootstrap)
-        #    print(f'No config found: number of students entered: {number_of_students}')
-#
-        #    student_state['number_of_students_entered'] = number_of_students - 1 # counting from 0 ###
-#
-        #    #print(write_to_file(TMP_FILE, f'{number_of_students - 1}'))
-        #    write_to_file(TMP_FILE, json.dumps(student_state)) ###
-#
-        #    #student_number = number_of_students
-        #    #print(f"Current student number being processed: {student_state['student_number_processed']}") ###
-        #    print(f"Current student number being processed: current_student_number") ###
-
-        #number_of_students_remaining = student_number - 1
-        #print(f'number_of_students_remaining: {number_of_students_remaining}')
         panos_send_commands(panos_connection, command_type='operational', commands=['set cli scripting-mode on'])
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system timezone US/Pacific',
-            #f"set deviceconfig system hostname Panorama-student-{student_state['student_number_processed']}",
             f"set deviceconfig system hostname Panorama-student-{current_student_number}",
             'set deviceconfig system dns-setting servers primary 1.0.0.1',
             'set deviceconfig system ntp-servers primary-ntp-server ntp-server-address pool.ntp.org'])
-        #sleep(3)
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set deviceconfig system device-telemetry threat-prevention no',
             'set deviceconfig system device-telemetry device-health-performance no',
@@ -124,7 +89,6 @@ def main():
             'set template-stack sdwan-stack settings default-vsys vsys1',
             'set template sdwan-template variable $wan1_ip type ip-netmask 1.1.1.1/32',
             'set template sdwan-template variable $wan2_ip type ip-netmask 1.1.1.2/32',
-            #'set template sdwan-template variable $lan_ip type ip-netmask 1.1.1.3/32',
             'set template sdwan-template variable $wan1_next_hop type ip-netmask 1.1.1.1/32',
             'set template sdwan-template variable $wan2_next_hop type ip-netmask 1.1.1.2/32',
             'set template sdwan-template config  network profiles interface-management-profile Ping ping yes',
@@ -136,7 +100,6 @@ def main():
             'set template sdwan-template config  network interface ethernet ethernet1/3 layer3 interface-management-profile Ping',
             'set template sdwan-template config  network virtual-router corp ecmp algorithm ip-modulo ',
             'set template sdwan-template config  network virtual-router corp interface [ ethernet1/1 ethernet1/2 ethernet1/3 ]'])
-        #sleep(3)
         panos_send_commands(panos_connection, command_type='configure', commands=[
             'set template sdwan-template config  vsys vsys1 import network interface [ ethernet1/1 ethernet1/2 ethernet1/3 ]',
             'set template sdwan-template config  vsys vsys1 zone Untrust network layer3 [ ]',
@@ -154,9 +117,23 @@ def main():
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 interface ethernet1/2',
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 metric 10',
             'set template sdwan-template config  network virtual-router corp routing-table ip static-route net-198.19.0.0 destination 198.19.0.0/16',
-
-            #'set device-group sdwan devices',
             'set device-group sdwan reference-templates sdwan-stack',
+            'set device-group sdwan log-settings profiles default match-list traffic log-type traffic',
+            'set device-group sdwan log-settings profiles default match-list traffic filter "All Logs"',
+            'set device-group sdwan log-settings profiles default match-list traffic send-to-panorama yes',
+            'set device-group sdwan log-settings profiles default match-list traffic quarantine no',
+            'set device-group sdwan log-settings profiles default match-list threat log-type threat',
+            'set device-group sdwan log-settings profiles default match-list threat filter "All Logs"',
+            'set device-group sdwan log-settings profiles default match-list threat send-to-panorama yes',
+            'set device-group sdwan log-settings profiles default match-list threat quarantine no',
+            'set device-group sdwan log-settings profiles default match-list url log-type url',
+            'set device-group sdwan log-settings profiles default match-list url filter "All Logs"',
+            'set device-group sdwan log-settings profiles default match-list url send-to-panorama yes',
+            'set device-group sdwan log-settings profiles default match-list url quarantine no',
+            'set device-group sdwan log-settings profiles default match-list wildfire log-type wildfire',
+            'set device-group sdwan log-settings profiles default match-list wildfire filter "All Logs"',
+            'set device-group sdwan log-settings profiles default match-list wildfire send-to-panorama yes',
+            'set device-group sdwan log-settings profiles default match-list wildfire quarantine no',
             'set device-group sdwan pre-rulebase security rules "permit all" target negate no',
             'set device-group sdwan pre-rulebase security rules "permit all" to any',
             'set device-group sdwan pre-rulebase security rules "permit all" from any',
@@ -168,44 +145,9 @@ def main():
             'set device-group sdwan pre-rulebase security rules "permit all" service any',
             'set device-group sdwan pre-rulebase security rules "permit all" source-hip any',
             'set device-group sdwan pre-rulebase security rules "permit all" destination-hip any',
-            'set device-group sdwan pre-rulebase security rules "permit all" action allow'])
+            'set device-group sdwan pre-rulebase security rules "permit all" action allow',
+            'set device-group sdwan pre-rulebase security rules "permit all" log-setting default'])
         panos_commit(panos_connection)
-        
-        #try:
-        #    if read_from_file(TMP_FILE):
-        #        number_of_students_remaining = int(read_from_file(TMP_FILE))
-        #        student_number = number_of_students_remaining
-        #        print(write_to_file(TMP_FILE, f'{number_of_students_remaining - 1}'))
-#
-        #    else:
-        #        number_of_students = int(args.create_bootstrap)
-        #        print(f'No config found: number of students entered: {number_of_students}')
-        #        print(write_to_file(TMP_FILE, f'{number_of_students}'))
-        #        student_number = number_of_students
-        #    number_of_students_remaining = number_of_students - 1
-        #    print(f'number_of_students_remaining: {number_of_students_remaining}')
-        #except:
-        #    sys.exit('ERROR: Bootstrap parameter entered was not a number. Please enter number of students to build the bootstrap for.')
-        ### vm_auth_key = panos_create_vm_auth_key(ip, panos_api_key)
-        #if number_of_students_remaining < 1:
-        #print('before')
-        #print(f"student_state['student_number_processed'] {student_state['student_number_processed']}")
-        #print(f"student_state['number_of_students_entered'] {student_state['number_of_students_entered']}")
-        #if student_state['student_number_processed'] > student_state['number_of_students_entered']:
-        #    print("student_state['student_number_processed'] > student_state['number_of_students_entered'], removing temp file")
-        #    #print('number_of_students_remaining < 1, removing file')
-        #    os.remove(TMP_FILE)
-        ##create_bootstrap_terraform_files(student_number, vm_auth_key)
-        #create_bootstrap_terraform_files(current_student_number, vm_auth_key)
-
-        #student_state['student_number_processed'] += 1 ###
-        #print('after')
-        #print(f"student_state['student_number_processed'] {student_state['student_number_processed']}")
-        #print(f"student_state['number_of_students_entered'] {student_state['number_of_students_entered']}")
-        #print('writing to file')
-        #write_to_file(TMP_FILE, json.dumps(student_state)) ###d
-        #print('Reading back from file')
-        #print(json.loads(read_from_file(TMP_FILE)), '\n')
 
     if panos_connection:
         panos_connection.disconnect()
